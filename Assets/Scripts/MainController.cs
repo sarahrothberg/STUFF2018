@@ -2,79 +2,69 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.PostProcessing;
-using StateNamespace;
 
 
-public enum AppStates { First, Second, Third };
-
-public class MainController : MonoBehaviour
+namespace MainControllerNS
 {
-	public AppStates _appState;
-
-	public StateMachine<MainController> stateMachine { get; set; }
-
-	public GameObject keyboard; 
-
-	public AudioSource linesPlayer; 
-	public AudioClip[] introLines;
-
-	public GameObject[] stuff;
-	public Color[] colors;
-	public GameObject stuffSign;
-
-	public float gameTimer;
-	public int seconds = 0;
-
-	public PostProcessingProfile _postProcessingProfile;
-	public Material everything;
-
-
-	void Start()
+	public class MainController : MonoBehaviour
 	{
-		ResetVisuals();
-		Cursor.visible = false;
+		public GameObject[] appStateControllers;
 
-		stateMachine = new StateMachine<MainController>(this);
-		gameTimer = Time.time;
+		public GameObject keyboard;
 
-		switch (_appState)
+		public AudioSource linesPlayer;
+		public AudioClip[] introLines;
+
+		public GameObject[] stuff;
+		public Color[] colors;
+		public GameObject stuffSign;
+
+		public float gameTimer;
+		public int seconds = 0;
+
+		public PostProcessingProfile _postProcessingProfile;
+		public Material everything;
+
+
+		void Start()
 		{
-			case AppStates.First:
-				stateMachine.ChangeState(FirstState.Instance);
-				break;
-			case AppStates.Second:
-				stateMachine.ChangeState(SecondState.Instance);
-				break;
-			case AppStates.Third:
-				stateMachine.ChangeState(ThirdState.Instance);
-				break;
-		}
-	}
-
-	void Update()
-	{
-		if (Input.GetKeyDown("1"))
-		{
-		stateMachine.ChangeState(FirstState.Instance);
-
-		}
-		if (Input.GetKeyDown("2"))
-		{
-		stateMachine.ChangeState(SecondState.Instance);
-
-		}
-		if (Input.GetKeyDown("3"))
-		{
-		stateMachine.ChangeState(ThirdState.Instance);
+			ResetVisuals();
+			Cursor.visible = false;
 		}
 
-		stateMachine.Update();
-	}
+		void Update()
+		{
+			if (Input.GetKeyDown("1"))
+			{
+				foreach (GameObject appState in appStateControllers)
+				{
+					appState.SetActive(false);
+				}
+				appStateControllers[0].SetActive(true);
+			}
+			if (Input.GetKeyDown("2"))
+			{
+				foreach (GameObject appState in appStateControllers)
+				{
+					appState.SetActive(false);
+				}
+				appStateControllers[1].SetActive(true);
+			}
+			if (Input.GetKeyDown("3"))
+			{
+				foreach (GameObject appState in appStateControllers)
+				{
+					appState.SetActive(false);
+				}
+				appStateControllers[2].SetActive(true);
+			}
+		}
 
-	public void ResetVisuals()
-	{
-		var chromatiAbb = _postProcessingProfile.chromaticAberration.settings;
-		chromatiAbb.intensity = 0;
-		_postProcessingProfile.chromaticAberration.settings = chromatiAbb;
+		public void ResetVisuals()
+		{
+			var chromatiAbb = _postProcessingProfile.chromaticAberration.settings;
+			chromatiAbb.intensity = 0;
+			_postProcessingProfile.chromaticAberration.settings = chromatiAbb;
+		}
 	}
 }
